@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>لوحة الطالب — أكاديمية</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* إضافات محلية للوحة */
+    .dashboard{padding:18px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:12px}
+    .course-item{display:flex;gap:12px;align-items:center;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);margin-bottom:10px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01))}
+    .course-item img{width:120px;height:72px;object-fit:cover;border-radius:8px;flex-shrink:0}
+    .progress{height:10px;background:rgba(255,255,255,0.04);border-radius:999px;overflow:hidden;margin-top:8px}
+    .progress > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),#6fffb0);width:40%}
+    .logout{background:#ff6b6b}
+  </style>
+</head>
+<body>
+  <div class="bg-blobs" aria-hidden="true">
+    <div class="blob b1"></div>
+    <div class="blob b2"></div>
+    <div class="blob b3"></div>
+  </div>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <h1 class="logo">لوحة الطالب</h1>
+      <nav class="main-nav">
+        <a href="index.html">الرئيسية</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="dashboard glass" id="dashboardContent">
+      <h3>مرحبًا</h3>
+      <div id="userInfo"></div>
+      <h4>الدورات الخاصة بك</h4>
+      <div id="myCourses"></div>
+      <div style="margin-top:12px">
+        <button id="logoutBtn" class="btn logout">تسجيل الخروج</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="data.js"></script>
+  <script>
+    // لوحة الطالب تعتمد على نفس البيانات
+    const courses = window.ACADEMY_COURSES || [];
+    const user = JSON.parse(localStorage.getItem('student_user')||'null');
+    const purchases = JSON.parse(localStorage.getItem('student_purchases')||'[]');
+    const userInfo = document.getElementById('userInfo');
+    const myCourses = document.getElementById('myCourses');
+    const logoutBtn = document.getElementById('logoutBtn');
+
+    if(!user){ userInfo.innerHTML = '<p>لم تقم بتسجيل الدخول بعد. يمكنك شراء دورة من الصفحة الرئيسية للتسجيل تلقائيًا.</p>'; }
+    else{ userInfo.innerHTML = '<p>البريد الإلكتروني: <strong>' + user.email + '</strong></p>'; }
+
+    if(purchases.length===0){
+      myCourses.innerHTML = '<p>لا توجد دورات مملوكة بعد.</p>';
+    } else {
+      myCourses.innerHTML = '';
+      purchases.forEach(id=>{
+        const c = courses.find(x=>x.id===id);
+        if(!c) return;
+        const el = document.createElement('div');
+        el.className = 'course-item';
+        el.innerHTML = `
+          <img src="${c.thumb}" alt="${c.title}">
+          <div>
+            <strong>${c.title}</strong>
+            <div class="progress"><i style="width: ${Math.floor(Math.random()*60+10)}%"></i></div>
+            <div style="margin-top:8px">
+              <button class="btn" data-id="${c.id}" onclick="openLesson('${c.id}')">فتح الدورة</button>
+              <button class="btn-outline" onclick="downloadCertificate('${c.id}')">تحميل الشهادة</button>
+            </div>
+          </div>
+        `;
+        myCourses.appendChild(el);
+      });
+    }
+
+    function openLesson(id){
+      alert('فتح درس: ' + id + '\nهذا مثال. يمكن بناء مشغل فيديو مفصل لاحقًا.');
+    }
+    function downloadCertificate(id){
+      const user = JSON.parse(localStorage.getItem('student_user')||'null');
+      if(!user) return alert('سجل الدخول أولًا.');
+      const cname = courses.find(c=>c.id===id)?.title || 'دورة';
+      const html = `
+        <html dir="rtl" lang="ar"><head><meta charset="utf-8"><style>
+        body{font-family: 'Cairo', sans-serif;text-align:center;padding:40px;background:#0b0f14;color:#fff}
+        .cert{border:6px solid var(--accent);padding:30px;border-radius:10px;background:rgba(255,255,255,0.02)}
+        h1{margin:0 0 8px}
+        p{margin:6px 0}
+        </style></head><body>
+        <div class="cert">
+          <h1>شهادة إتمام</h1>
+          <p>تُمنح لـ <strong>${user?.email}</strong></p>
+          <p>لإتمام دورة: <strong>${cname}</strong></p>
+          <p>تاريخ الإصدار: ${new Date().toLocaleDateString('ar-EG')}</p>
+        </div></body></html>
+      `;
+      const blob = new Blob([html], {type: 'text/html'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'certificate-' + id + '.html';
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+
+    logoutBtn.addEventListener('click', ()=>{
+      localStorage.removeItem('student_user');
+      alert('تم تسجيل الخروج محليًا');
+      location.reload();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>أكاديمية - واجهة زجاج سائل</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="bg-blobs" aria-hidden="true">
+    <div class="blob b1"></div>
+    <div class="blob b2"></div>
+    <div class="blob b3"></div>
+  </div>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="brand">
+        <h1 class="logo">أكاديمية التعليم</h1>
+        <p class="tag">تعليم عصري بتجربة مظلمة وزجاجية</p>
+      </div>
+      <nav class="main-nav" aria-label="القائمة الرئيسية">
+        <a href="index.html">الرئيسية</a>
+        <a href="#courses">الدورات</a>
+        <a href="dashboard.html" id="nav-dashboard">لوحة الطالب</a>
+        <a href="#about">عن الأكاديمية</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero glass">
+      <div class="hero-inner">
+        <h2>ابدأي رحلة التعلم بتصميم Dark & Liquid Glass</h2>
+        <p>واجهة أنيقة مع تأثيرات زجاجية وسلاسة ديناميكية. كل شيء قابل للتعديل بسهولة.</p>
+        <div class="hero-actions">
+          <button id="exploreBtn" class="btn btn-primary">اطلعي على الدورات</button>
+          <a href="dashboard.html" class="btn btn-outline">لوحة الطالب</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="courses" class="courses-grid" aria-label="قائمة الدورات"></section>
+
+    <section id="about" class="about glass">
+      <h3>عن الأكاديمية</h3>
+      <p>نسخة ثابتة (Static) مُصممة بثيم داكن وتأثيرات زجاجية سائلة. مناسبة للعرض على GitHub Pages بدون Backend.</p>
+    </section>
+  </main>
+
+  <div id="courseModal" class="modal" aria-hidden="true">
+    <div class="modal-content glass">
+      <button class="close-btn" id="closeModal" aria-label="اغلاق">×</button>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
